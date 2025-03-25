@@ -29,7 +29,7 @@ def load_cifar10_batch(batch_id):
     return images, labels
 
 
-def LoadBatch(batch_id, dtype=np.float32):
+def LoadBatch(batch_id, dtype=np.float64):
     """
     Load a CIFAR-10 batch file and return image data, one-hot labels, and raw labels.
 
