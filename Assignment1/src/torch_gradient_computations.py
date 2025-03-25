@@ -1,33 +1,52 @@
 import torch
 import numpy as np
-def ComputeGradsWithTorch(X, y, network_params):
 
-    # torch requires arrays to be torch tensors
-    Xt = torch.from_numpy(X)
+def ComputeGradsWithTorch(X, y, network_params, lam):
+    """
+    Computes gradients using PyTorch with L2 regularization.
 
-    # will be computing the gradient w.r.t. these parameters
-    W = torch.tensor(network_params['W'], requires_grad=True)
-    b = torch.tensor(network_params['b'], requires_grad=True)    
+    Parameters:
+      X              : d x N numpy array (input data)
+      y              : 1D numpy array of length N (true class indices)
+      network_params : Dictionary with keys:
+                       - "W" : K x d weight matrix
+                       - "b" : K x 1 bias vector
+      lam            : Regularization coefficient (lambda)
     
-    N = X.shape[1]
-    
-    scores = torch.matmul(W, Xt)  + b;
+    Returns:
+      grads: Dictionary with computed gradients:
+             - "W": K x d gradient matrix
+             - "b": K x 1 gradient vector
+    """
+    # Convert numpy arrays to PyTorch tensors
+    Xt = torch.from_numpy(X).float()
 
-    ## give an informative name to this torch class
+    # Create tensors for weights and biases that require gradients
+    W = torch.tensor(network_params['W'], dtype=torch.float32, requires_grad=True)
+    b = torch.tensor(network_params['b'], dtype=torch.float32, requires_grad=True)    
+
+    N = X.shape[1]  # Number of samples
+
+    # Compute raw scores: S = W * X + b
+    scores = torch.matmul(W, Xt) + b
+
+    # Apply softmax
     apply_softmax = torch.nn.Softmax(dim=0)
-
-    # apply softmax to each column of scores
     P = apply_softmax(scores)
-    
-    ## compute the loss
-    loss = torch.mean(-torch.log(P[y, np.arange(N)]))    
 
-    # compute the backward pass relative to the loss and the named parameters 
-    loss.backward()
+    # Compute cross-entropy loss
+    loss = torch.mean(-torch.log(P[y, np.arange(N)]))
 
-    # extract the computed gradients and make them numpy arrays 
-    grads = {}
-    grads['W'] = W.grad.numpy()
-    grads['b'] = b.grad.numpy()
+    # Compute total cost (loss + L2 regularization)
+    cost = loss + lam * torch.sum(W * W)
 
-    return grads    
+    # Compute gradients w.r.t cost
+    cost.backward()
+
+    # Extract computed gradients and convert to numpy
+    grads = {
+        "W": W.grad.numpy(),
+        "b": b.grad.numpy()
+    }
+
+    return grads
