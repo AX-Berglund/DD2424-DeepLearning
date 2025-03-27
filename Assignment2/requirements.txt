@@ -1,0 +1,9 @@
+numpy
+matplotlib
+torch
+torchvision
+tqdm
+pickle-mixin
+jupyter
+scipy
+pytest
