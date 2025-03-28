@@ -269,6 +269,64 @@ def initialize_network(K=10, d=3072, seed=42):
     rng = np.random.default_rng(seed)
     return {"W": 0.01 * rng.standard_normal(size=(K, d)), "b": np.zeros((K, 1))}
 
+def main_2():
+    # Load and preprocess data
+    X_train_raw, Y_train, y_train = LoadBatch(1)
+    X_val_raw, Y_val, y_val = LoadBatch(2)
+    X_test_raw, Y_test, y_test = LoadBatch("test_batch")
+
+    X_train, X_val, X_test = preprocess_data(X_train_raw, X_val_raw, X_test_raw)
+
+    # Define experiment configurations
+    configs = [
+        {"lam": 0, "eta": 0.1, "label": "lam0_eta01"},
+        {"lam": 0, "eta": 0.001, "label": "lam0_eta0001"},
+        {"lam": 0.1, "eta": 0.001, "label": "lam01_eta0001"},
+        {"lam": 1, "eta": 0.001, "label": "lam1_eta0001"}
+    ]
+
+    for cfg in configs:
+        print(f"Running config: lambda={cfg['lam']}, eta={cfg['eta']}")
+        init_net = initialize_network()
+        GDparams = {"n_batch": 100, "eta": cfg["eta"], "n_epochs": 40}
+
+        # Train network
+        trained_net, loss_hist, cost_hist = MiniBatchGD(
+            X_train, Y_train, GDparams, init_net, cfg["lam"],
+            X_val=X_val, Y_val=Y_val, track_loss=True
+        )
+
+        # Evaluate final test accuracy
+        P_test = ApplyNetwork(X_test, trained_net)
+        test_acc = ComputeAccuracy(P_test, y_test[0])
+        print(f"Test Accuracy for {cfg['label']}: {test_acc*100:.2f}%")
+
+        # Plot training and validation loss
+        plt.figure()
+        plt.plot(loss_hist["train"], label="Train Loss")
+        plt.plot(loss_hist["val"], label="Val Loss")
+        plt.title(f"Loss Curve ({cfg['label']})")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(f"loss_curve_{cfg['label']}.png")
+
+        # Visualize weights
+        W = trained_net["W"]
+        Ws = W.T.reshape((32, 32, 3, 10), order='F')
+        W_img = np.transpose(Ws, (1, 0, 2, 3))
+
+        fig, axs = plt.subplots(1, 10, figsize=(15, 2))
+        for i in range(10):
+            w_img = W_img[:, :, :, i]
+            w_img_norm = (w_img - np.min(w_img)) / (np.max(w_img) - np.min(w_img))
+            axs[i].imshow(w_img_norm)
+            axs[i].axis('off')
+        plt.suptitle(f"Weight Visualization ({cfg['label']})")
+        plt.savefig(f"weights_{cfg['label']}.png")
+        plt.close()
+
 def main():
     # Load and preprocess data
     X_train_raw, Y_train, y_train = LoadBatch(1)
@@ -306,3 +364,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
