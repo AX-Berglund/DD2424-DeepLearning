@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import pickle
+import torch
 import os
 
 
-def LoadBatch(batch_id, dtype=np.float64):
+def LoadBatch(batch_id, dtype=np.float32):
     """
     Load a CIFAR-10 batch file and return image data, one-hot labels, and raw labels.
 
@@ -290,6 +291,58 @@ def MiniBatchGD(X, Y, GDparams, init_net, lam, X_val=None, Y_val=None, track_los
     return trained_net
 
 
+
+def ComputeGradsWithTorch(X, y, network_params, lam):
+    """
+    Computes gradients using PyTorch with L2 regularization.
+
+    Parameters:
+      X              : d x N numpy array (input data)
+      y              : 1D numpy array of length N (true class indices)
+      network_params : Dictionary with keys:
+                       - "W" : K x d weight matrix
+                       - "b" : K x 1 bias vector
+      lam            : Regularization coefficient (lambda)
+    
+    Returns:
+      grads: Dictionary with computed gradients:
+             - "W": K x d gradient matrix
+             - "b": K x 1 gradient vector
+    """
+    # Convert numpy arrays to PyTorch tensors
+    Xt = torch.from_numpy(X).float()
+
+    # Create tensors for weights and biases that require gradients
+    W = torch.tensor(network_params['W'], dtype=torch.float32, requires_grad=True)
+    b = torch.tensor(network_params['b'], dtype=torch.float32, requires_grad=True)    
+
+    N = X.shape[1]  # Number of samples
+
+    # Compute raw scores: S = W * X + b
+    scores = torch.matmul(W, Xt) + b
+
+    # Apply softmax
+    apply_softmax = torch.nn.Softmax(dim=0)
+    P = apply_softmax(scores)
+
+    # Compute cross-entropy loss
+    loss = torch.mean(-torch.log(P[y, np.arange(N)]))
+
+    # Compute total cost (loss + L2 regularization)
+    cost = loss + lam * torch.sum(W * W)
+
+    # Compute gradients w.r.t cost
+    cost.backward()
+
+    # Extract computed gradients and convert to numpy
+    grads = {
+        "W": W.grad.numpy(),
+        "b": b.grad.numpy()
+    }
+
+    return grads
+
+
 def main():
     # Load and preprocess data
     X_train_raw, Y_train, y_train = LoadBatch(1)
@@ -310,12 +363,13 @@ def main():
 
     # Compute gradients and compare with PyTorch
     grads_own = BackwardPass(X_train[:, :20], Y_train[:, :20], P, init_net, 0.1)
-    grads_torch = BackwardPass(X_train[:, :20], Y_train[:, :20], P, init_net, 0.1)
+    grads_torch = ComputeGradsWithTorch(X_train[:, :20], Y_train[:, :20], init_net, 0.1)
     CompareGradients(grads_own, grads_torch)
 
     # Train the network
     GDparams = {"n_batch": 100, "eta": 0.001, "n_epochs": 10}
-    trained_net = MiniBatchGD(X_train, Y_train, GDparams, init_net, 0.1)
+    trained_net, loss_hist, cost_hist = MiniBatchGD(X_train, Y_train, GDparams, init_net, 0.1, track_loss=True)
+
 
     # Evaluate the trained network
     P_train, P_val, P_test = ApplyNetwork(X_train, trained_net), ApplyNetwork(X_val, trained_net), ApplyNetwork(X_test, trained_net)
@@ -426,6 +480,11 @@ def exercise_1():
 
     X_train, X_val, X_test = preprocess_data(X_train_raw, X_val_raw, X_test_raw)
 
+    class_names = [
+        'airplane', 'automobile', 'bird', 'cat', 'deer',
+        'dog', 'frog', 'horse', 'ship', 'truck'
+    ]
+
     # Define experiment configurations
     configs = [
         {"lam": 0, "eta": 0.1, "label": "lam0_eta01"},
@@ -452,6 +511,7 @@ def exercise_1():
         test_acc = ComputeAccuracy(P_test, y_test[0])
         print(f"Test Accuracy for {cfg['label']}: {test_acc:.2f}%")
 
+        
         # Plot training and validation loss
         plt.figure()
         plt.plot(loss_hist["train"], label="Train Loss")
@@ -575,5 +635,6 @@ def main_with_horizontal_flipping():
 
 
 if __name__ == "__main__":
-    #exercise_1()
-    main_use_all_batches()
+    exercise_1()
+    #main_use_all_batches()
+    #main()

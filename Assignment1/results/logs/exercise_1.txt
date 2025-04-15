@@ -1,0 +1,9 @@
+Running config: lambda=0, eta=0.1
+Test Accuracy for lam0_eta01: 28.80%
+Running config: lambda=0, eta=0.001
+Test Accuracy for lam0_eta0001: 39.32%
+Running config: lambda=0.1, eta=0.001
+Test Accuracy for lam01_eta0001: 39.40%
+Running config: lambda=1, eta=0.001
+Test Accuracy for lam1_eta0001: 37.38%
+
