@@ -1,0 +1,8 @@
+Dataset prepared at 2025-04-16 12:16:49
+Training samples: 45000
+Validation samples: 5000
+Test samples: 10000
+Feature dimension: 3072
+Number of classes: 10
+Training data mean shape: (3072, 1)
+Training data std shape: (3072, 1)

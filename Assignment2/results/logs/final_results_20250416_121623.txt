@@ -1,0 +1,19 @@
+Final training completed at 2025-04-16 13:43:29
+
+Best lambda from search: 3.917822351009127e-06
+Final training parameters:
+  Batch size: 100
+  eta_min: 1e-05
+  eta_max: 0.1
+  step_size (n_s): 800
+  number of cycles: 3
+
+Training set size: 49000
+Validation set size: 1000
+Test set size: 10000
+
+Final test accuracy: 0.5114
+Final training accuracy: 0.5978
+Final validation accuracy: 0.5100
+Final training loss: 1.1554
+Final validation loss: 1.3398

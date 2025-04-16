@@ -1,0 +1,18 @@
+Lambda search completed at 2025-04-16 13:40:54
+
+Coarse search parameters:
+  Log range: [-5, -1]
+  Number of values: 8
+  Best lambda: 0.00013894954943731373
+  Best validation accuracy: 0.5252
+
+Fine search parameters:
+  Range: [3.3333333333333337e-06, 0.0004168486483119412]
+  Number of values: 8
+  Best lambda: 3.917822351009127e-06
+  Best validation accuracy: 0.5262
+
+Top 3 lambda values from coarse search:
+  1. Lambda: 0.00013894954943731373, Accuracy: 0.5252
+  2. Lambda: 1e-05, Accuracy: 0.5224
+  3. Lambda: 3.727593720314938e-05, Accuracy: 0.5212
