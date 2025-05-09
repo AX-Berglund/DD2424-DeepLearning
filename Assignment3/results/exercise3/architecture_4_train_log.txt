@@ -1,0 +1,23 @@
+Running Exercise 3 with architecture 4, 49000 training samples, 4 threads
+Loading and preprocessing data...
+Data loaded: 49000 training, 1000 validation, 10000 test samples
+
+Training Architecture 4: f=16, nf=160, nh=50
+
+Training completed in 91.58 seconds
+Final validation accuracy: 0.6070
+
+Final test accuracy: 0.5944
+
+Plot saved to: results/exercise3/architecture_4_curves.png
+ning time: 91.58 seconds
+Final validation accuracy: 0.6070
+Final test accuracy: 0.5944
+
+Training Parameters:
+Number of training samples: 49000
+Number of threads: 4
+Learning rate range: 1e-05 to 0.1
+Number of cycles: 3
+Batch size: 100
+Lambda regularization: 0.003

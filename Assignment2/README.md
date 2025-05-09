@@ -40,9 +40,9 @@ pip install numpy matplotlib torch
 ### Dataset Setup
 Download the CIFAR-10 dataset and extract it into the `Datasets` directory:
 ```bash
-mkdir -p Datasets
-cd Datasets
-wget https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
+mkdir -p data
+cd data
+curl -O https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
 ```
 Extract the dataset:
 ```bash

@@ -1,0 +1,27 @@
+Running Exercise 4 with 49000 training samples, 4 threads
+Longer training: False, Label smoothing epsilon: 0.1
+Loading and preprocessing data...
+Data loaded: 49000 training, 1000 validation, 10000 test samples
+
+Training Architecture 5: f=4, nf=40, nh=300
+Training without label smoothing...
+
+Training completed in 329.60 seconds
+Final validation accuracy: 0.6520
+
+Final test accuracy without label smoothing: 0.6600
+
+Training with label smoothing...
+
+Training completed in 349.31 seconds
+Final validation accuracy: 0.6700
+
+Final test accuracy with label smoothing: 0.6567
+Comparison plots saved to results/exercise4/label_smoothing_comparison_20250509_164040.png
+
+Comparison Summary:
+Without Label Smoothing - Test Accuracy: 0.6600
+With Label Smoothing - Test Accuracy: 0.6567
+Improvement: -0.33%
+
+Exercise 4 completed successfully!

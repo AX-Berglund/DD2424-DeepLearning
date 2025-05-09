@@ -1,0 +1,32 @@
+
+==================================================
+TRAINING SUMMARY
+==================================================
+Training Summary for Architecture 5
+Training time: 329.60 seconds
+Final validation accuracy: 0.6520
+Final test accuracy: 0.6600
+
+Training Parameters:
+Number of training samples: 49000
+Number of threads: 4
+Learning rate range: 1e-05 to 0.1
+Number of cycles: 4
+Batch size: 100
+Lambda regularization: 0.0025
+
+==================================================
+TRAINING SUMMARY
+==================================================
+Training Summary for Architecture 5
+Training time: 349.31 seconds
+Final validation accuracy: 0.6700
+Final test accuracy: 0.6567
+
+Training Parameters:
+Number of training samples: 49000
+Number of threads: 4
+Learning rate range: 1e-05 to 0.1
+Number of cycles: 4
+Batch size: 100
+Lambda regularization: 0.0025
