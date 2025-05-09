@@ -1,4 +1,8 @@
-**/data/
+**/cifar-10-batches-py/
 
 **/__pycache__/
+
+**/.DS_Store
+
+**/.ipynb_checkpoints/
 
